@@ -3,38 +3,38 @@ import java.util.List;
 
 public class Epic extends Task{
 
-    List<SubTask> subTasks;
+    private final List<Integer> subTasksId;
 
     public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
-        this.subTasks = new ArrayList<>();
+        this.subTasksId = new ArrayList<>();
     }
 
-    public void addSubTask(SubTask subTask) {
-        subTasks.add(subTask);
+    public void addSubTask(int subTask) {
+        subTasksId.add(subTask);
     }
 
     public void removeSubTask(SubTask subTask) {
-        subTasks.remove(subTask);
+        subTasksId.remove(subTask);
     }
 
-    public List<SubTask> getSubTasks() {
-        return subTasks;
+    public List<Integer> getSubTasksId() {
+        return subTasksId;
     }
 
     @Override
     public void setStatus(Status status) {
         super.setStatus(status);
-        if (subTasks.isEmpty()) {
+        if (subTasksId.isEmpty()) {
             super.setStatus(Status.NEW);
         }else {
             boolean allDone = true;
             boolean allNew = true;
-            for (SubTask subTask : subTasks) {
-                if (subTask.getStatus() != Status.DONE) {
+            for (Integer subTaskId : subTasksId) {
+                if (subTaskId.getStatus() != Status.DONE) {
                     allDone = false;
                 }
-                if (subTask.getStatus() != Status.NEW) {
+                if (subTaskId.getStatus() != Status.NEW) {
                     allNew = false;
                 }
             }
@@ -46,5 +46,12 @@ public class Epic extends Task{
                 super.setStatus(Status.IN_PROGRESS);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "subTasksId=" + subTasksId +
+                '}';
     }
 }
