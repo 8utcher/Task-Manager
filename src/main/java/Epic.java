@@ -3,19 +3,19 @@ import java.util.List;
 
 public class Epic extends Task{
 
-    private final List<Integer> subTasksId;
+    private final List<Integer> subTasksId = new ArrayList<>();
+    SubTask subTask;
 
     public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
-        this.subTasksId = new ArrayList<>();
     }
 
     public void addSubTask(int subTask) {
         subTasksId.add(subTask);
     }
 
-    public void removeSubTask(SubTask subTask) {
-        subTasksId.remove(subTask);
+    public void removeBySubTaskId(int subTaskId) {
+        subTasksId.remove(subTaskId);
     }
 
     public List<Integer> getSubTasksId() {
@@ -23,35 +23,11 @@ public class Epic extends Task{
     }
 
     @Override
-    public void setStatus(Status status) {
-        super.setStatus(status);
-        if (subTasksId.isEmpty()) {
-            super.setStatus(Status.NEW);
-        }else {
-            boolean allDone = true;
-            boolean allNew = true;
-            for (Integer subTaskId : subTasksId) {
-                if (subTaskId.getStatus() != Status.DONE) {
-                    allDone = false;
-                }
-                if (subTaskId.getStatus() != Status.NEW) {
-                    allNew = false;
-                }
-            }
-            if (allDone) {
-                super.setStatus(Status.DONE);
-            } else if (allNew) {
-                super.setStatus(Status.NEW);
-            }else {
-                super.setStatus(Status.IN_PROGRESS);
-            }
-        }
-    }
-
-    @Override
     public String toString() {
         return "Epic{" +
                 "subTasksId=" + subTasksId +
+                ", epicId=" + getId() +
+                ", status=" + getStatus() +
                 '}';
     }
 }

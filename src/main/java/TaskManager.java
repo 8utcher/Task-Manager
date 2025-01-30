@@ -5,11 +5,11 @@ import java.util.Map;
 
 public interface TaskManager {
 
-    Task createTask(String title, String description, Task.Status status);
+    Task createTask(String title, String description, Status status);
 
-    Epic createEpic(String title, String description, Task.Status status);
+    Epic createEpic(String title, String description, Status status);
 
-    SubTask createSubTask(String title, String description, Task.Status status, Epic epic);
+    SubTask createSubTask(String title, String description, Status status, int epicId);
 
     Task getTask(int id);
 
