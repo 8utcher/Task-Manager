@@ -37,5 +37,7 @@ public interface TaskManager {
 
     void printAllTasks();
 
+    List<SubTask> getListSubTasksOfEpic(int epicID);
+
 }
 

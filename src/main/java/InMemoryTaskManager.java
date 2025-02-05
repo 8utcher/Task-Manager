@@ -79,12 +79,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpic(int id) {
-        epics.remove(id);
+
+        if (epics.containsKey(id)) {
+            Epic epic = epics.get(id);
+            epics.remove(id);
+            List<Integer> subTaskList = epic.getSubTasksId();
+            for (Integer subtaskId : subTaskList) {
+                subtasks.remove(subtaskId);
+            }
+        }
     }
 
     @Override
     public void removeSubTask(int id) {
-        subtasks.remove(id);
+
+        if (subtasks.containsKey(id)) {
+            SubTask subTask = subtasks.get(id);
+            subtasks.remove(id);
+            int epicId = subTask.getEpicId();
+            Epic epic = epics.get(epicId);
+            epic.removeBySubTaskId(id);
+            updateEpicStatus(epic);
+        }
     }
 
     @Override
@@ -111,6 +127,22 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.values().forEach(System.out::println);
     }
 
+    @Override
+    public List<SubTask> getListSubTasksOfEpic(int epicID) {
+        List<SubTask> subTasks = null;
+
+        if (epics.containsKey(epicID)) {
+            Epic epic = epics.get(epicID);
+            List<Integer> subTaskList = epic.getSubTasksId();
+            subTasks = new ArrayList<>();
+            for (Integer subTask : subTaskList) {
+                subTasks.add(subtasks.get(subTask));
+            }
+        }
+
+        return subTasks;
+    }
+
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
@@ -120,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
         int subTaskDone = 0;
         int subTaskInProgress = 0;
 
-        if(epic.getSubTasksId().isEmpty()) {
+        if (epic.getSubTasksId().isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }
@@ -140,7 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.DONE);
         } else if (subTaskNew == epic.getSubTasksId().size()) {
             epic.setStatus(Status.NEW);
-        }else  if (subTaskInProgress > 0) {
+        } else if (subTaskInProgress > 0) {
             epic.setStatus(Status.IN_PROGRESS);
         } else {
             epic.setStatus(Status.NEW);
